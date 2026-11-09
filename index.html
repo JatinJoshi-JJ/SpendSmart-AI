@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>SpendSmart AI — Your Money. Your Intelligence. Your Control.</title>
+  <meta name="description"
+    content="Production-ready AI-powered personal finance management platform with live ledger, category budgets, savings goals, recurring bills, and grounded Gemini financial intelligence." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- ========================================================================
+       TOP APP HEADER
+       ======================================================================== -->
+  <header class="app-header">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <!-- Mobile Hamburger Button -->
+      <button type="button" class="hamburger-btn" id="drawer-toggle-btn" aria-label="Open Navigation Menu"
+        aria-expanded="false" aria-controls="mobile-nav-drawer">
+        ☰
+      </button>
+
+      <div class="brand-wrap" id="brand-home-btn" title="SpendSmart AI Home">
+        <div class="brand-logo-icon">✦</div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 6px">
+            <span class="brand-title">SpendSmart AI</span>
+            <span class="brand-tag">PRO</span>
+          </div>
+          <div class="mobile-hide" style="
+                font-size: 11px;
+                color: var(--text-muted);
+                font-weight: 500;
+              ">
+            Your Money. Your Intelligence. Your Control.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Quick AI Tools -->
+      <button type="button" class="btn btn-secondary btn-sm mobile-hide" id="hdr-voice-btn" title="Voice Entry">
+        <span aria-hidden="true">🎙</span>
+        <span>Voice</span>
+      </button>
+
+      <!-- Notifications Bell -->
+      <div style="position: relative">
+        <button type="button" class="btn btn-secondary btn-sm" id="notif-toggle-btn" aria-label="Notifications"
+          style="padding: 6px 10px">
+          <span aria-hidden="true">🔔</span>
+          <span class="badge badge-rose" id="notif-count-badge">2</span>
+        </button>
+        <div class="notification-pane" id="notification-pane">
+          <div style="
+                padding: 12px 14px;
+                font-weight: 800;
+                border-bottom: 1px solid var(--border-color);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              ">
+            <span>Notifications</span>
+            <button type="button" id="mark-notifs-read" style="
+                  background: none;
+                  border: none;
+                  color: var(--brand-primary);
+                  cursor: pointer;
+                  font-size: 11px;
+                  font-weight: 700;
+                ">
+              Mark all read
+            </button>
+          </div>
+          <div id="notif-list-wrap">
+            <div class="notif-item unread">
+              <span style="font-weight: 700">Dining Out approaching 80% budget</span>
+              <span style="color: var(--text-muted)">₹7,800 spent of ₹10,000 monthly limit.</span>
+            </div>
+            <div class="notif-item unread">
+              <span style="font-weight: 700">Upcoming: WiFi Broadband Bill</span>
+              <span style="color: var(--text-muted)">₹999 due via UPI AutoPay on 15th Nov.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme Switcher -->
+      <button type="button" class="btn btn-secondary btn-sm" id="theme-switch-btn" title="Toggle Light/Dark Theme"
+        style="padding: 6px 10px">
+        <span id="theme-icon">☀️</span>
+      </button>
+
+      <!-- Primary Add Button -->
+      <button type="button" class="btn btn-primary btn-sm" id="open-record-modal-btn">
+        <span>+ Add</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       TOP VIEW NAVIGATION RIBBON (DESKTOP)
+       ======================================================================== -->
+  <nav class="app-nav-ribbon" aria-label="Product Navigation Desktop">
+    <button type="button" class="nav-tab-btn active" data-view="dashboard">
+      📊 Dashboard
+    </button>
+    <button type="button" class="nav-tab-btn" data-view="transactions">
+      💳 Transactions
+    </button>
+    <button type="button" class="nav-tab-btn" data-view="budgets">
+      🎯 Budgets
+    </button>
+    <button type="button" class="nav-tab-btn" data-view="ai-assistant">
+      ✦ AI Companion
+    </button>
+    <button type="button" class="nav-tab-btn" data-view="analytics">
+      📈 Analytics
+    </button>
+    <button type="button" class="nav-tab-btn" data-view="savings">
+      🏆 Goals
+    </button>
+    <button type="button" class="nav-tab-btn" data-view="recurring">
+      🔄 Recurring
+    </button>
+    <button type="button" class="nav-tab-btn" data-view="calendar">
+      📅 Calendar
+    </button>
+    <button type="button" class="nav-tab-btn" data-view="shared">
+      👥 Split
+    </button>
+    <button type="button" class="nav-tab-btn" data-view="settings">
+      ⚙️ Settings
+    </button>
+  </nav>
+
+  <!-- ========================================================================
+       MOBILE NAVIGATION DRAWER & BACKDROP
+       ======================================================================== -->
+  <div class="mobile-drawer-backdrop" id="drawer-backdrop" aria-hidden="true"></div>
+  <aside class="mobile-drawer" id="mobile-nav-drawer" role="dialog" aria-modal="true" aria-label="Navigation Menu">
+    <div class="drawer-header">
+      <div style="display: flex; align-items: center; gap: 8px">
+        <div class="brand-logo-icon" style="width: 28px; height: 28px; font-size: 14px">
+          ✦
+        </div>
+        <span style="font-weight: 800; font-size: 15px">SpendSmart AI</span>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" id="drawer-close-btn" aria-label="Close Navigation Menu"
+        style="padding: 4px 8px; min-height: 30px">
+        ✕
+      </button>
+    </div>
+    <div class="drawer-links-list">
+      <button type="button" class="drawer-nav-item active" data-view="dashboard">
+        <span>📊</span> Dashboard Overview
+      </button>
+      <button type="button" class="drawer-nav-item" data-view="transactions">
+        <span>💳</span> Transactions Ledger
+      </button>
+      <button type="button" class="drawer-nav-item" data-view="budgets">
+        <span>🎯</span> Budgets &amp; Caps
+      </button>
+      <button type="button" class="drawer-nav-item" data-view="ai-assistant">
+        <span>✦</span> AI Finance Assistant
+      </button>
+      <button type="button" class="drawer-nav-item" data-view="analytics">
+        <span>📈</span> Analytics &amp; Reports
+      </button>
+      <button type="button" class="drawer-nav-item" data-view="savings">
+        <span>🏆</span> Savings Goals
+      </button>
+      <button type="button" class="drawer-nav-item" data-view="recurring">
+        <span>🔄</span> Recurring &amp; Bills
+      </button>
+      <button type="button" class="drawer-nav-item" data-view="calendar">
+        <span>📅</span> Projected Calendar
+      </button>
+      <button type="button" class="drawer-nav-item" data-view="shared">
+        <span>👥</span> Shared &amp; Roommates
+      </button>
+      <button type="button" class="drawer-nav-item" data-view="settings">
+        <span>⚙️</span> Settings &amp; Backup
+      </button>
+    </div>
+    <div style="
+          padding: 14px;
+          border-top: 1px solid var(--border-color);
+          font-size: 11px;
+          color: var(--text-muted);
+          text-align: center;
+        ">
+      SpendSmart AI • Local-First
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       APPLICATION VIEWS CONTAINER
+       ======================================================================== -->
+  <main class="app-content-body">
+    <!-- NATURAL LANGUAGE AI CONVERSATIONAL BAR -->
+    <section class="ai-smartbar" aria-label="Quick AI Engine">
+      <div class="ai-badge-pulse">
+        <span aria-hidden="true">✦</span>
+        <span>Gemini 3 Flash</span>
+      </div>
+      <input type="text" class="ai-input-field" id="smart-ai-input"
+        placeholder="Type naturally: 'Spent ₹480 on Swiggy lunch via UPI' or 'Received ₹85,000 salary'..." />
+      <div style="
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            justify-content: flex-end;
+          ">
+        <button type="button" class="btn btn-secondary btn-sm" id="hdr-receipt-btn">
+          📷 Scan Receipt
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" id="smart-ai-parse-btn">
+          Parse &amp; Post
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         VIEW 1: FINANCIAL OVERVIEW DASHBOARD
+         ====================================================================== -->
+    <div class="view-container active" id="view-dashboard">
+      <!-- 4 KPI Metrics -->
+      <section class="grid-kpis">
+        <div class="kpi-card emerald">
+          <span class="kpi-label">Net Balance (Liquid)</span>
+          <span class="kpi-value" id="kpi-balance">₹0</span>
+          <span class="kpi-subtext" style="color: var(--accent-emerald)">● Solvency Positive</span>
+        </div>
+        <div class="kpi-card indigo">
+          <span class="kpi-label">Total Monthly Income</span>
+          <span class="kpi-value" id="kpi-income">₹0</span>
+          <span class="kpi-subtext">Salary &amp; side-projects</span>
+        </div>
+        <div class="kpi-card rose">
+          <span class="kpi-label">Total Monthly Outflow</span>
+          <span class="kpi-value" id="kpi-expense">₹0</span>
+          <span class="kpi-subtext">Verified debits</span>
+        </div>
+        <div class="kpi-card amber">
+          <span class="kpi-label">Net Savings Rate</span>
+          <span class="kpi-value" id="kpi-savings-rate">0%</span>
+          <span class="kpi-subtext" id="kpi-savings-amount">₹0 retained</span>
+        </div>
+      </section>
+
+      <!-- 2-Col: Cashflow Velocity SVG & Financial Health Score -->
+      <section class="grid-2col">
+        <!-- SVG Area Curve Chart -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">
+              📈 Cash-Flow Trend &amp; Spending Curve
+            </h3>
+            <span class="badge badge-indigo">Daily Resolution</span>
+          </div>
+          <div style="height: 160px; width: 100%; position: relative">
+            <svg viewBox="0 0 500 130" preserveAspectRatio="none" style="width: 100%; height: 100%; overflow: visible"
+              id="dashboard-cashflow-svg">
+              <defs>
+                <linearGradient id="chart-glow" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="var(--brand-primary)" stop-opacity="0.35" />
+                  <stop offset="100%" stop-color="var(--brand-primary)" stop-opacity="0.0" />
+                </linearGradient>
+              </defs>
+              <polygon id="cf-polygon" points="0,130 0,90 80,75 160,85 240,40 320,60 400,25 500,45 500,130"
+                fill="url(#chart-glow)" />
+              <polyline id="cf-polyline" points="0,90 80,75 160,85 240,40 320,60 400,25 500,45" fill="none"
+                stroke="var(--brand-primary)" stroke-width="3" stroke-linecap="round" />
+              <circle cx="400" cy="25" r="5" fill="var(--brand-primary)" stroke="var(--bg-surface)" stroke-width="2" />
+            </svg>
+          </div>
+          <div style="
+                display: flex;
+                justify-content: space-between;
+                font-size: 11px;
+                color: var(--text-muted);
+                font-family: var(--font-mono);
+              ">
+            <span>Week 1</span>
+            <span>Week 2</span>
+            <span>Week 3</span>
+            <span>Week 4</span>
+            <span>Current Trajectory</span>
+          </div>
+        </div>
+
+        <!-- Financial Health Score Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">🛡️ Financial Health Score</h3>
+            <span class="badge badge-emerald" id="health-tier-badge">Excellent</span>
+          </div>
+          <div style="
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                flex-wrap: wrap;
+              ">
+            <div style="
+                  position: relative;
+                  width: 84px;
+                  height: 84px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  background: var(--bg-surface-raised);
+                  border-radius: 50%;
+                  border: 4px solid var(--accent-emerald);
+                  flex-shrink: 0;
+                ">
+              <span style="
+                    font-family: var(--font-mono);
+                    font-size: 28px;
+                    font-weight: 800;
+                  " id="health-score-val">84</span>
+            </div>
+            <div style="
+                  flex: 1;
+                  min-width: 200px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 5px;
+                ">
+              <div style="font-size: 12.5px; font-weight: 700">
+                Formula Weighting Model:
+              </div>
+              <div style="
+                    font-size: 11.5px;
+                    color: var(--text-muted);
+                    line-height: 1.5;
+                  ">
+                • Savings Rate (30%): <strong>Strong (>25%)</strong><br />
+                • Budget Adherence (30%): <strong>78% Burn Rate</strong><br />
+                • Debt &amp; Recurring Load (20%): <strong>Low (<18%)< /strong><br />
+                    • Goal Progress (20%): <strong>On Schedule</strong>
+              </div>
+            </div>
+          </div>
+          <div style="
+                font-size: 12px;
+                background: var(--bg-surface-raised);
+                padding: 10px 12px;
+                border-radius: var(--radius-sm);
+                color: var(--text-secondary);
+              ">
+            💡 <strong>AI Recommendation:</strong> You are pacing to save
+            ₹18,500 surplus this month by curbing food delivery frequency.
+          </div>
+        </div>
+      </section>
+
+      <!-- Monthly Budget Utilization Tracker -->
+      <section class="card">
+        <div class="card-header">
+          <h3 class="card-title">🎯 Monthly Master Budget Utilization</h3>
+          <span class="badge badge-amber" id="overall-budget-status">Approaching Cap</span>
+        </div>
+        <div style="
+              display: flex;
+              justify-content: space-between;
+              font-weight: 700;
+              font-size: 13px;
+            ">
+          <span id="budget-spent-lbl">₹42,500 spent</span>
+          <span id="budget-limit-lbl">Limit: ₹60,000</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill amber" id="master-budget-progress-bar" style="width: 70.8%"></div>
+        </div>
+        <div style="
+              display: flex;
+              justify-content: space-between;
+              font-size: 11.5px;
+              color: var(--text-muted);
+            ">
+          <span id="budget-headroom-lbl">₹17,500 headroom remaining</span>
+          <span>70.8% exhausted with 11 days left</span>
+        </div>
+      </section>
+
+      <!-- Recent Transactions Snapshot Table -->
+      <section class="card">
+        <div class="card-header">
+          <h3 class="card-title">⚡ Recent Transactions</h3>
+          <button type="button" class="btn btn-secondary btn-sm" id="dash-view-all-tx">
+            View All →
+          </button>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Method</th>
+                <th>Type</th>
+                <th style="text-align: right">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="dash-recent-tx-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================================
+         VIEW 2: TRANSACTIONS MANAGEMENT (FULL CRUD)
+         ====================================================================== -->
+    <div class="view-container" id="view-transactions">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">💳 Complete Transaction Ledger</h3>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap">
+            <input type="search" class="form-control" id="tx-search-input" placeholder="Search merchant, notes..."
+              style="width: 200px" />
+            <select class="form-control" id="tx-category-filter">
+              <option value="all">All Categories</option>
+              <option value="Salary">Salary / Income</option>
+              <option value="Food &amp; Dining">Food &amp; Dining</option>
+              <option value="Housing &amp; Rent">Housing &amp; Rent</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Utilities &amp; Bills">
+                Utilities &amp; Bills
+              </option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Healthcare">Healthcare</option>
+            </select>
+            <button type="button" class="btn btn-secondary btn-sm" id="export-csv-btn">
+              Export CSV
+            </button>
+            <button type="button" class="btn btn-primary btn-sm" id="tx-add-new-btn">
+              + Add Transaction
+            </button>
+          </div>
+        </div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Payee / Description</th>
+                <th>Category</th>
+                <th>Wallet / Method</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th style="text-align: right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tx-full-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         VIEW 3: BUDGET PLANNING & CATEGORY CAPS
+         ====================================================================== -->
+    <div class="view-container" id="view-budgets">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">🎯 Category-Specific Spending Limits</h3>
+          <button type="button" class="btn btn-primary btn-sm" id="add-category-budget-btn">
+            + Set Category Cap
+          </button>
+        </div>
+        <div class="grid-2col" id="budgets-category-grid">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         VIEW 4: AI FINANCE COMPANION (CHAT & ADVISORY)
+         ====================================================================== -->
+    <div class="view-container" id="view-ai-assistant">
+      <div class="card">
+        <div class="card-header">
+          <div style="display: flex; align-items: center; gap: 8px">
+            <span style="font-size: 20px">✦</span>
+            <h3 class="card-title">Grounded AI Finance Companion</h3>
+          </div>
+          <span class="badge badge-indigo">Grounded in User Ledger</span>
+        </div>
+
+        <!-- Chat History Box -->
+        <div class="ai-chat-thread" id="ai-chat-thread">
+          <div class="chat-bubble assistant">
+            Hello! I am your SpendSmart AI companion. I have full read access
+            to your verified ledger records, category velocity, and active
+            budgets. How can I assist your financial planning today?
+          </div>
+        </div>
+
+        <!-- Quick Prompts Buttons -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap">
+          <button type="button" class="btn btn-secondary btn-sm ai-preset-prompt"
+            data-q="Where did most of my money go this month?">
+            Where did money go?
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm ai-preset-prompt"
+            data-q="How can I save ₹5,000 extra next month based on my records?">
+            How to save ₹5,000?
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm ai-preset-prompt"
+            data-q="Can I afford a ₹15,000 gadget purchase right now?">
+            Can I afford ₹15,000 purchase?
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm ai-preset-prompt"
+            data-q="Analyze my recurring subscription expenses and highlight potential savings.">
+            Analyze subscriptions
+          </button>
+        </div>
+
+        <!-- Input Bar -->
+        <div style="display: flex; gap: 8px">
+          <input type="text" class="form-control" id="ai-chat-input"
+            placeholder="Ask anything about your income, spending, or savings goals..." style="flex: 1" />
+          <button type="button" class="btn btn-primary" id="ai-chat-send-btn">
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         VIEW 5: ANALYTICS & VISUAL REPORTING
+         ====================================================================== -->
+    <div class="view-container" id="view-analytics">
+      <div class="grid-2col">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">📊 Category Outflow Breakdown</h3>
+          </div>
+          <div id="analytics-category-bars" style="display: flex; flex-direction: column; gap: 14px">
+            <!-- Category bars -->
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">💳 Payment Method Distribution</h3>
+          </div>
+          <div id="analytics-method-distribution" style="display: flex; flex-direction: column; gap: 14px">
+            <!-- Payment breakdown -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         VIEW 6: SAVINGS GOALS
+         ====================================================================== -->
+    <div class="view-container" id="view-savings">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">🏆 Active Savings Targets</h3>
+          <button type="button" class="btn btn-primary btn-sm" id="create-goal-btn">
+            + Create New Goal
+          </button>
+        </div>
+        <div class="grid-3col" id="savings-goals-grid">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         VIEW 7: RECURRING BILLS & SUBSCRIPTIONS
+         ====================================================================== -->
+    <div class="view-container" id="view-recurring">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">
+            🔄 Active Subscriptions &amp; Commitments
+          </h3>
+          <button type="button" class="btn btn-primary btn-sm" id="add-recurring-btn">
+            + Add Bill
+          </button>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Service / Payee</th>
+                <th>Frequency</th>
+                <th>Next Due Date</th>
+                <th>Payment Mode</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th style="text-align: right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="recurring-bills-tbody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         VIEW 8: CASH CALENDAR
+         ====================================================================== -->
+    <div class="view-container" id="view-calendar">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">
+            📅 Projected Financial Calendar (November 2026)
+          </h3>
+        </div>
+        <div class="grid-2col">
+          <div style="
+                background: var(--bg-surface-raised);
+                padding: 18px;
+                border-radius: var(--radius-sm);
+              ">
+            <h4 style="font-size: 14px; margin-bottom: 10px">
+              Upcoming Cash Obligations
+            </h4>
+            <ul style="
+                  padding-left: 20px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 8px;
+                ">
+              <li>
+                <strong>15 Nov:</strong> Broadband WiFi (₹999) via UPI AutoPay
+              </li>
+              <li>
+                <strong>20 Nov:</strong> Electricity Utility Bill (₹2,200)
+              </li>
+              <li>
+                <strong>28 Nov:</strong> Expected Freelance Retainer Inflow
+                (+₹25,000)
+              </li>
+              <li><strong>01 Dec:</strong> House Rent Outflow (-₹18,000)</li>
+            </ul>
+          </div>
+          <div style="
+                background: var(--bg-surface-raised);
+                padding: 18px;
+                border-radius: var(--radius-sm);
+              ">
+            <h4 style="font-size: 14px; margin-bottom: 10px">
+              Projected Liquidity Position
+            </h4>
+            <p style="color: var(--text-muted); font-size: 13px">
+              Based on scheduled commitments and historical daily velocity
+              (₹1,420/day), your estimated month-end closing balance will be
+              <strong style="color: var(--accent-emerald)">₹34,800</strong>.
+              No cash-flow squeeze is projected.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         VIEW 9: SHARED GROUPS
+         ====================================================================== -->
+    <div class="view-container" id="view-shared">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">
+            👥 Shared Expenses &amp; Roommate Splitter
+          </h3>
+          <button type="button" class="btn btn-primary btn-sm" id="record-settle-btn">
+            Record Settle
+          </button>
+        </div>
+        <div class="grid-2col">
+          <div>
+            <h4 style="margin-bottom: 10px">Apartment 402 Roommates</h4>
+            <div id="shared-balances-summary" style="display: flex; flex-direction: column; gap: 10px">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+          <div style="
+                background: var(--bg-surface-raised);
+                padding: 16px;
+                border-radius: var(--radius-sm);
+              ">
+            <h4 style="margin-bottom: 10px">Suggested Settlement</h4>
+            <div id="settlement-advice" style="font-size: 13px; color: var(--text-secondary)">
+              Rahul owes you <strong>₹1,450</strong> for WiFi &amp; Groceries.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         VIEW 10: SETTINGS & DATA PORTABILITY
+         ====================================================================== -->
+    <div class="view-container" id="view-settings">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">⚙️ Preferences &amp; Data Portability</h3>
+        </div>
+
+        <form id="settings-form" style="display: flex; flex-direction: column; gap: 16px">
+          <div class="form-group-grid">
+            <div class="form-row">
+              <label class="form-label" for="setting-name">Your Full Name</label>
+              <input type="text" class="form-control" id="setting-name" value="Aarav Sharma" required />
+            </div>
+            <div class="form-row">
+              <label class="form-label" for="setting-currency">Base Display Currency</label>
+              <select class="form-control" id="setting-currency">
+                <option value="INR">
+                  INR (₹ - Indian Rupee with Lakh/Crore)
+                </option>
+                <option value="USD">USD ($ - US Dollar)</option>
+                <option value="EUR">EUR (€ - Euro)</option>
+                <option value="GBP">GBP (£ - British Pound)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label" for="setting-api-key">Custom Gemini API Key (Optional)</label>
+            <input type="password" class="form-control" id="setting-api-key"
+              placeholder="Enter custom key or leave empty to use default preview environment" />
+            <small style="color: var(--text-muted); font-size: 11px">Key is stored solely in local storage on your
+              device.</small>
+          </div>
+
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px">
+            <button type="submit" class="btn btn-primary">
+              Save Preferences
+            </button>
+            <button type="button" class="btn btn-secondary" id="download-json-backup-btn">
+              Download JSON Backup
+            </button>
+            <label class="btn btn-secondary" style="cursor: pointer; margin: 0">
+              Restore JSON
+              <input type="file" id="import-json-file" accept=".json" style="display: none" />
+            </label>
+            <button type="button" class="btn btn-secondary" id="reset-demo-data-btn" style="color: var(--accent-rose)">
+              Reset Demo Records
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       MODALS: TRANSACTION RECORD (ADD/EDIT)
+       ======================================================================== -->
+  <div class="modal-backdrop" id="record-modal" role="dialog" aria-modal="true" aria-labelledby="modal-record-title">
+    <div class="modal-card">
+      <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          ">
+        <h3 style="font-weight: 800; font-size: 17px" id="modal-record-title">
+          + Record Transaction
+        </h3>
+        <button type="button" class="btn btn-secondary btn-sm" id="close-record-modal-btn">
+          ✕
+        </button>
+      </div>
+
+      <form id="record-form" style="display: flex; flex-direction: column; gap: 14px">
+        <input type="hidden" id="rf-id" />
+
+        <div class="form-group-grid">
+          <div class="form-row">
+            <label class="form-label" for="rf-type">Transaction Type *</label>
+            <select class="form-control" id="rf-type" required>
+              <option value="expense">Expense (Debit)</option>
+              <option value="income">Income (Credit)</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label class="form-label" for="rf-amount">Amount (<span class="currency-sym">₹</span>) *</label>
+            <input type="number" step="0.01" min="0.01" class="form-control" id="rf-amount" placeholder="450.00"
+              required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label" for="rf-title">Merchant / Payee / Description *</label>
+          <input type="text" class="form-control" id="rf-title" placeholder="e.g. Swiggy Gourmet, Monthly Salary"
+            required />
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-row">
+            <label class="form-label" for="rf-category">Category *</label>
+            <select class="form-control" id="rf-category" required>
+              <option value="Food &amp; Dining">Food &amp; Dining</option>
+              <option value="Housing &amp; Rent">Housing &amp; Rent</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Utilities &amp; Bills">
+                Utilities &amp; Bills
+              </option>
+              <option value="Salary">Salary / Income</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Healthcare">Healthcare</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label class="form-label" for="rf-date">Date *</label>
+            <input type="date" class="form-control" id="rf-date" required />
+          </div>
+        </div>
+
+        <div class="form-group-grid">
+          <div class="form-row">
+            <label class="form-label" for="rf-method">Payment Instrument *</label>
+            <select class="form-control" id="rf-method" required>
+              <option value="UPI">UPI (GPay / PhonePe / Paytm)</option>
+              <option value="Credit Card">Credit Card</option>
+              <option value="Debit Card">Debit Card</option>
+              <option value="NetBanking">NetBanking Transfer</option>
+              <option value="Cash">Cash</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label class="form-label" for="rf-wallet">Account / Wallet</label>
+            <select class="form-control" id="rf-wallet">
+              <option value="HDFC Bank">HDFC Salary A/c</option>
+              <option value="ICICI Bank">ICICI Savings</option>
+              <option value="Cash Wallet">Cash Wallet</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label" for="rf-notes">Notes / Tax / Receipt Meta</label>
+          <input type="text" class="form-control" id="rf-notes" placeholder="e.g. Business dinner bill receipt #2049" />
+        </div>
+
+        <div style="
+              display: flex;
+              justify-content: flex-end;
+              gap: 8px;
+              margin-top: 10px;
+            ">
+          <button type="button" class="btn btn-secondary" id="cancel-record-modal-btn">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Save Transaction
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FLOATING TOAST FEEDBACK -->
+  <div class="toast-pill" id="app-toast" role="status" aria-live="polite">
+    <span id="toast-icon">✓</span>
+    <span id="toast-message">Update successful</span>
+  </div>
+
+  <!-- ========================================================================
+       APPLICATION ENGINE JAVASCRIPT
+       ======================================================================== -->
+  <script src="script.js"></script>
+</body>
+
+</html>
